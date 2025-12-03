@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <math.h>
+#include <math.h> // only for sqrt() function
 #include<stdlib.h>
 const double PI=3.14159265359; // for circle calculations
 
@@ -58,7 +58,7 @@ double average(int length,int arr[]){
 }
 
 double std(int length, int arr[]){
-    int mean=average(length,arr);
+    int mean=average(length,arr); // takes from the previous function
     int tot=0;
     for(int i=0;i<length;i++){
         tot+=(arr[i]-mean)*(arr[i]-mean);
@@ -72,10 +72,11 @@ double std(int length, int arr[]){
 int main(){
     int choice,calc_space,index=0,angle,exponent,f_number; // angle is for deg_to_rad; exponent is for exponential ; f_number is for factoriel
     double x1,x2,result;
+    int extra_calc_space=0; // allocating new memory for new calculations initially it is 0 because to assign a number to run the conditions
+    int extra_calc_choice; // will take 1 or 0 to determine add new calculations or not
     double* calc_hist; 
     int arr_length; // length of the below array
     int array[arr_length]; // this array is for mean and standart deviation calculations
-    //char calc_str[15]; // calculation string will be added to calc_hist
     printf("How many calculations do you want to make? ");
     scanf("%d",&calc_space);
     calc_hist= (double*) malloc(calc_space*sizeof(int));
@@ -86,10 +87,10 @@ int main(){
     else{
         printf("Memory allocation has been succeeded. \n");
     }
-    
-    
+
     do
-    {
+    { 
+        // menu
         printf("MENU\n");
         printf("---------------\n");
         printf("1) Summation: \n");
@@ -106,15 +107,34 @@ int main(){
         printf("12) Average of the given numbers : \n");
         printf("13) Standart deviation of the given list of numbers : \n");
         printf("14) Exit. \n");
+        if(index==calc_space+extra_calc_space){
+            printf("You achieved maximum limit of calculatons that you entered.\n");
+            printf("Do you want to calculate more? 1:Yes 0:No");
+            scanf("%d",&extra_calc_choice);
+            if (extra_calc_choice==1)
+            {
+                printf("How many more calculations do you want to make?");
+                scanf("%d",&extra_calc_space);
+                calc_hist= (double*) realloc(calc_hist,(calc_space+extra_calc_space)*sizeof(int));
+                
+            }
+            else{
+                printf("Exit the program. \n");
+                return 0;
+            }
+            
+
+        }
+        // choice selection
         printf("Please enter your choice 1-14: ");
         scanf("%d",&choice);
+
         if (choice>14 || choice<1)
         {
             printf("Please enter number between 1 and 5.\n");
         }
         else
         {
-            
             if (choice==1) // summation
             {
                 printf("Please enter the first number: ");
@@ -122,7 +142,7 @@ int main(){
                 printf("Please enter the second number: ");
                 scanf("%lf",&x2);
                 result=summation(x1,x2);
-                *(calc_hist+index)=result;
+                *(calc_hist+index)=result; // adding to the history calc_hist is a pointer and index refers to position of the added calculation 
                 index=index+1;
                 printf("%lf + %lf = %lf \n",x1,x2,result);
             }
@@ -199,9 +219,9 @@ int main(){
                 result=deg_to_rad(angle);
                 *(calc_hist+index)=result;
                 index=index+1;
-                printf("%d degrees = %lf \n",angle,result);
+                printf("%d degrees = %lf rad \n",angle,result);
             }
-            if (choice==10)
+            if (choice==10) // exponential
             {
                 printf("Please enter the base: ");
                 scanf("%lf",&x1);
@@ -212,7 +232,7 @@ int main(){
                 index=index+1;
                 printf("%lf ^ %d = %lf \n",x1,exponent,result);
             }
-            if (choice==11)
+            if (choice==11) // factoriel
             {
                 printf("Please enter the number to achieve factoriel: ");
                 scanf("%d",&f_number);
@@ -221,7 +241,7 @@ int main(){
                 index=index+1;
                 printf("%d ! = %d \n",f_number,(int)result);
             }
-            if (choice==12)
+            if (choice==12) // calculating mean
             {
                 printf("Please enter the lenght of the list of numbers: ");
                 scanf("%d",&arr_length);
@@ -234,7 +254,7 @@ int main(){
                 index=index+1;
                 printf("Average of the given numbers is: %lf \n",result);
             }
-            if (choice==13)
+            if (choice==13) // standard deviation
             {
                 printf("Please enter the lenght of the list of numbers: ");
                 scanf("%d",&arr_length);
@@ -250,7 +270,7 @@ int main(){
         }
         
         
-    } while (choice!=14);
+    } while (choice!=14); // exit
     printf("Exit the program.\n");
     free(calc_hist);
 
