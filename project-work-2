@@ -1,89 +1,110 @@
 #include <stdio.h>
-#include <math.h> // only for sqrt() function
-#include<stdlib.h>
-const double PI=3.14159265359; // for circle calculations
+#include <math.h>
+#include <stdlib.h>
 
-double summation(double x1, double x2){
-    return x1+x2;
+const double PI=3.14159265359;
+
+int safeInt() {
+    char buf[200];
+    int val;
+    while (1) {
+        if (!fgets(buf, sizeof(buf), stdin)) {
+            printf("Invalid input. Enter again: ");
+            continue;
+        }
+        int isValid = 1;
+        int i = 0;
+        if (buf[i] == '-') i++;
+        if (!(buf[i] >= '0' && buf[i] <= '9')) isValid = 0;
+        for (i++; buf[i] != '\0' && buf[i] != '\n'; i++) {
+            if (!(buf[i] >= '0' && buf[i] <= '9')) {
+                isValid = 0;
+                break;
+            }
+        }
+        if (isValid && sscanf(buf, "%d", &val) == 1)
+            return val;
+        printf("Invalid input. Enter again: ");
+    }
 }
 
-double subtraction(double x1, double x2){
-    return x1-x2;
+double safeDouble() {
+    char buf[200];
+    double val;
+    while (1) {
+        if (!fgets(buf, sizeof(buf), stdin)) {
+            printf("Invalid input. Enter again: ");
+            continue;
+        }
+        int i = 0;
+        int dot = 0;
+        int isValid = 1;
+        if (buf[i] == '-') i++;
+        if (!(buf[i] >= '0' && buf[i] <= '9')) isValid = 0;
+        for (i++; buf[i] != '\0' && buf[i] != '\n'; i++) {
+            if (buf[i] == '.') {
+                dot++;
+                if (dot > 1) { isValid = 0; break; }
+            } else if (!(buf[i] >= '0' && buf[i] <= '9')) {
+                isValid = 0;
+                break;
+            }
+        }
+        if (isValid && sscanf(buf, "%lf", &val) == 1)
+            return val;
+        printf("Invalid input. Enter again: ");
+    }
 }
 
-double division(double x1, double x2){
-    return x1/x2;
+int safeBinary() {
+    int x;
+    while (1) {
+        x = safeInt();
+        if (x == 0 || x == 1) return x;
+        printf("Invalid input. Enter again: ");
+    }
 }
 
-double multiplication(double x1, double x2){
-    return x1*x2;
-}
-double square_root(double x1){
-    return sqrt(x1);
-}
-double area_circ(double x1){
-    return PI*x1*x1;
-}
-double circumference_circ(double x1){
-    return 2*PI*x1;
-}
-double deg_to_rad(double x1){
-    return (x1*PI)/180;
-}
+double summation(double x1, double x2){ return x1+x2; }
+double subtraction(double x1, double x2){ return x1-x2; }
+double division(double x1, double x2){ return x1/x2; }
+double multiplication(double x1, double x2){ return x1*x2; }
+double square_root(double x1){ return sqrt(x1); }
+double area_circ(double x1){ return PI*x1*x1; }
+double circumference_circ(double x1){ return 2*PI*x1; }
+double deg_to_rad(double x1){ return (x1*PI)/180; }
 
 double exponential_f(double x1, int exponent){
     double mult=1.0;
-    for (int i = 0; i < exponent; i++)
-    {
-        mult*=x1;
-    }
+    for (int i = 0; i < exponent; i++) mult*=x1;
     return mult;
-    
 }
 
 double factoriel(int x1){
     int mult=1;
-    for(int i=1;i<=x1;i++){
-        mult*=i;
-    }
+    for(int i=1;i<=x1;i++) mult*=i;
     return mult;
 }
 
 double average(int length,int arr[]){
     int tot=0;
-    for(int i=0;i<length;i++){
-        tot+=arr[i];
-    }
+    for(int i=0;i<length;i++) tot+=arr[i];
     return (double) tot/length;
 }
 
 double std(int length, int arr[]){
-    int mean=average(length,arr); 
+    int mean=average(length,arr);
     int tot=0;
-    for(int i=0;i<length;i++){
-        tot+=(arr[i]-mean)*(arr[i]-mean);
-    }
+    for(int i=0;i<length;i++) tot+=(arr[i]-mean)*(arr[i]-mean);
     return sqrt(tot)/length;
 }
 
-// NEW FUNCTIONS 
+double sine(double x1){ return sin(x1); }
+double cosine(double x1){ return cos(x1); }
+double tangent(double x1){ return tan(x1); }
 
-double sine(double x1){
-    return sin(x1);
-}
-
-double cosine(double x1){
-    return cos(x1);
-}
-
-double tangent(double x1){
-    return tan(x1);
-}
-
-// Quadratic equation solver: ax^2 + bx + c = 0
 void quadratic_eq(double a, double b, double c){
     double D = b*b - 4*a*c;
-
     if (D > 0){
         double r1 = (-b + sqrt(D)) / (2*a);
         double r2 = (-b - sqrt(D)) / (2*a);
@@ -101,7 +122,6 @@ void quadratic_eq(double a, double b, double c){
     }
 }
 
-// Linear equation ax + b = 0
 void linear_eq(double a, double b){
     if (a == 0){
         printf("Not an equation or infinite solutions.\n");
@@ -120,19 +140,14 @@ int main(){
     int arr_length; 
 
     printf("How many calculations do you want to make? ");
-    scanf("%d",&calc_space);
+    calc_space = safeInt();
     calc_hist= (double*) malloc(calc_space*sizeof(int));
     if (calc_hist==NULL)
-    {
         printf("Memory allocation has been failed! \n");
-    }
-    else{
+    else
         printf("Memory allocation has been succeeded. \n");
-    }
 
-    do
-    { 
-        // menu
+    do { 
         printf("MENU\n");
         printf("---------------\n");
         printf("1) Summation\n");
@@ -154,18 +169,16 @@ int main(){
         printf("18) Solve quadratic equation ax^2 + bx + c = 0\n");
         printf("19) Solve linear equation ax + b = 0\n");
         printf("20) Exit\n");
-     
 
         if(index==calc_space+extra_calc_space){
             printf("You achieved maximum limit of calculatons that you entered.\n");
             printf("Do you want to calculate more? 1:Yes 0:No");
-            scanf("%d",&extra_calc_choice);
+            extra_calc_choice = safeBinary();
             if (extra_calc_choice==1)
             {
                 printf("How many more calculations do you want to make?");
-                scanf("%d",&extra_calc_space);
-                calc_hist= (double*) realloc(calc_hist,(calc_space+extra_calc_space)*sizeof(int));
-                
+                extra_calc_space = safeInt();
+                calc_hist= (double*) realloc(calc_hist,(calc_space+extra_calc_space)*sizeof(int)); 
             }
             else{
                 printf("Exit the program. \n");
@@ -174,231 +187,201 @@ int main(){
         }
 
         printf("Please enter your choice 1-20: ");
-        scanf("%d",&choice);
+        choice = safeInt();
 
-        if (choice<1 || choice>20)
-        {
+        if (choice<1 || choice>20){
             printf("Please enter valid number.\n");
         }
-        else
-        {
+        else{
             if (choice==1)
             {
                 printf("Please enter the first number: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 printf("Please enter the second number: ");
-                scanf("%lf",&x2);
+                x2 = safeDouble();
                 result=summation(x1,x2);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf + %lf = %lf \n",x1,x2,result);
             }
             if (choice==2)
             {
                 printf("Please enter the first number: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 printf("Please enter the second number: ");
-                scanf("%lf",&x2);
+                x2 = safeDouble();
                 result=subtraction(x1,x2);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf - %lf = %lf \n",x1,x2,result);
             }
             if (choice==3)
             {
                 printf("Please enter the first number: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 printf("Please enter the second number: ");
-                scanf("%lf",&x2);
+                x2 = safeDouble();
                 result=multiplication(x1,x2);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf * %lf = %lf \n",x1,x2,result);
             }
             if (choice==4)
             {
                 printf("Please enter the first number: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 printf("Please enter the second number: ");
-                scanf("%lf",&x2);
+                x2 = safeDouble();
                 result=division(x1,x2);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf / %lf = %lf \n",x1,x2,result);
             }
             if (choice==5)
             {
-                for(int i=0;i<index;i++){
-                    printf("%d. calculation: %lf \n",i+1,*(calc_hist+i));
-                }
+                for(int i=0;i<index;i++)
+                    printf("%d. calculation: %lf \n",i+1,calc_hist[i]);
             }
             if (choice==6)
             {
                 printf("Please enter the first number: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 result=square_root(x1);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("sqrt(%lf) = %lf \n",x1,result);
             }
             if (choice==7)
             {
                 printf("Please enter the radius of the circle: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 result=area_circ(x1);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf * %lf * %lf = %lf \n",PI,x1,x1,result);
             }
             if (choice==8)
             {
                 printf("Please enter the radius of the circle: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 result=circumference_circ(x1);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("2 * %lf * %lf = %lf \n",PI,x1,result);
             }
             if (choice==9)
             {
                 printf("Please enter an angle in degrees to convert rad: ");
-                scanf("%d",&angle);
+                angle = safeInt();
                 result=deg_to_rad(angle);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%d degrees = %lf rad \n",angle,result);
             }
             if (choice==10)
             {
                 printf("Please enter the base: ");
-                scanf("%lf",&x1);
+                x1 = safeDouble();
                 printf("Please enter the exponent: ");
-                scanf("%d",&exponent);
+                exponent = safeInt();
                 result=exponential_f(x1,exponent);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%lf ^ %d = %lf \n",x1,exponent,result);
             }
             if (choice==11)
             {
                 printf("Please enter the number to achieve factoriel: ");
-                scanf("%d",&f_number);
+                f_number = safeInt();
                 result=factoriel(f_number);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("%d ! = %d \n",f_number,(int)result);
             }
             if (choice==12)
             {
                 printf("Please enter the lenght of the list of numbers: ");
-                scanf("%d",&arr_length);
+                arr_length = safeInt();
 
                 int array[arr_length];
 
                 for(int i=0;i<arr_length;i++){
                     printf("Please enter a number to add the list: ");
-                    scanf("%d",&array[i]);
+                    array[i] = safeInt();
                 }
                 result=average(arr_length,array);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("Average of the given numbers is: %lf \n",result);
             }
             if (choice==13)
             {
                 printf("Please enter the lenght of the list of numbers: ");
-                scanf("%d",&arr_length);
+                arr_length = safeInt();
 
                 int array[arr_length];
 
                 for(int i=0;i<arr_length;i++){
                     printf("Please enter a number to add the list: ");
-                    scanf("%d",&array[i]);
+                    array[i] = safeInt();
                 }
                 result=std(arr_length,array);
-                *(calc_hist+index)=result;
-                index=index+1;
+                calc_hist[index++]=result;
                 printf("Standart deviation of the given numbers is: %lf \n",result);
             }
-
-            // ---------------------------------------
-            // NEW OPTIONS
-            // ---------------------------------------
-
             if (choice == 15)
             {
                 printf("Enter angle in degrees: ");
-                scanf("%lf", &x1);
+                x1 = safeDouble();
                 double rad = deg_to_rad(x1);
                 result = sine(rad);
-                *(calc_hist+index) = result;
-                index++;
+                calc_hist[index++] = result;
                 printf("sin(%lf°) = %lf\n", x1, result);
             }
-
             if (choice == 16)
             {
                 printf("Enter angle in degrees: ");
-                scanf("%lf", &x1);
+                x1 = safeDouble();
                 double rad = deg_to_rad(x1);
                 result = cosine(rad);
-                *(calc_hist+index) = result;
-                index++;
+                calc_hist[index++] = result;
                 printf("cos(%lf°) = %lf\n", x1, result);
             }
-
             if (choice == 17)
             {
                 printf("Enter angle in degrees: ");
-                scanf("%lf", &x1);
+                x1 = safeDouble();
                 double rad = deg_to_rad(x1);
                 result = tangent(rad);
-                *(calc_hist+index) = result;
-                index++;
+                calc_hist[index++] = result;
                 printf("tan(%lf°) = %lf\n", x1, result);
             }
-
             if (choice == 18)
             {
                 double a,b,c;
                 printf("Enter a (coefficient of x^2): ");
-                scanf("%lf", &a);
+                a = safeDouble();
                 printf("Enter b (coefficient of x): ");
-                scanf("%lf", &b);
+                b = safeDouble();
                 printf("Enter c (constant term): ");
-                scanf("%lf", &c);
+                c = safeDouble();
 
                 quadratic_eq(a,b,c);
 
                 result = b*b - 4*a*c;
-                *(calc_hist+index) = result;
-                index++;
+                calc_hist[index++] = result;
             }
-
             if (choice == 19)
             {
                 double a,b;
                 printf("Enter a (coefficient of x): ");
-                scanf("%lf", &a);
+                a = safeDouble();
                 printf("Enter b (constant term): ");
-                scanf("%lf", &b);
+                b = safeDouble();
 
                 linear_eq(a,b);
 
                 if (a != 0){
                     result = -b / a;
-                    *(calc_hist+index) = result;
-                    index++;
+                    calc_hist[index++] = result;
                 }
             }
-
         }
-        
-    } while (choice!=20); // exit
+
+    } while (choice!=20);
 
     printf("Exit the program.\n");
     free(calc_hist);
 
     return 0;
-    
 }
+
