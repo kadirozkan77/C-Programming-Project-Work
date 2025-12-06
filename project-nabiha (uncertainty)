@@ -1,0 +1,330 @@
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+const double PI = 3.14159265359;
+
+/* ---------- INPUT VALIDATION FUNCTION (added) ---------- */
+
+int get_valid_int() {
+    char buffer[100];
+    char *endptr;
+    long value;
+
+    while (1) {
+        printf("Enter an integer: ");
+        scanf("%s", buffer);
+
+        value = strtol(buffer, &endptr, 10);
+
+        if (*endptr == '\0') {
+            return (int)value;
+        }
+
+        printf("Invalid input! Please enter integers only.\n");
+    }
+}
+
+/* ---------- MODIFIED SUMMATION USING VALIDATION ---------- */
+
+double summation(double x1, double x2){
+    printf("You must enter integers only.\n");
+
+    int a = get_valid_int();
+    int b = get_valid_int();
+
+    return a + b;
+}
+
+/* -------------------------------------------------------- */
+
+double subtraction(double x1, double x2){
+    return x1-x2;
+}
+
+double division(double x1, double x2){
+    return x1/x2;
+}
+
+double multiplication(double x1, double x2){
+    return x1*x2;
+}
+
+double square_root(double x1){
+    return sqrt(x1);
+}
+
+double area_circ(double x1){
+    return PI*x1*x1;
+}
+
+double circumference_circ(double x1){
+    return 2*PI*x1;
+}
+
+double deg_to_rad(double x1){
+    return (x1*PI)/180;
+}
+
+double exponential_f(double x1, int exponent){
+    double mult=1.0;
+    for (int i = 0; i < exponent; i++){
+        mult*=x1;
+    }
+    return mult;
+}
+
+double factoriel(int x1){
+    int mult=1;
+    for(int i=1;i<=x1;i++){
+        mult*=i;
+    }
+    return mult;
+}
+
+double average(int length,int arr[]){
+    int tot=0;
+    for(int i=0;i<length;i++){
+        tot+=arr[i];
+    }
+    return (double) tot/length;
+}
+
+double std(int length, int arr[]){
+    int mean=average(length,arr);
+    int tot=0;
+    for(int i=0;i<length;i++){
+        tot+=(arr[i]-mean)*(arr[i]-mean);
+    }
+    return sqrt(tot)/length;
+}
+
+/* ---------- NEW STATISTICS FUNCTIONS ---------- */
+
+double relative_uncertainty(int length, int arr[]){
+    double mean = average(length, arr);
+    double sigma = std(length, arr);
+    return sigma / mean;
+}
+
+double combined_uncertainty(double u1, double u2){
+    return sqrt(u1*u1 + u2*u2);
+}
+
+/* ------------------------------------------------------------ */
+
+int main(){
+    int choice,calc_space,index=0,angle,exponent,f_number;
+    double x1,x2,result;
+    int extra_calc_space=0;
+    int extra_calc_choice;
+    double* calc_hist; 
+    int arr_length; 
+    int array[1000];
+
+    printf("How many calculations do you want to make? ");
+    scanf("%d",&calc_space);
+
+    calc_hist= (double*) malloc(calc_space*sizeof(int));
+    if (calc_hist==NULL){
+        printf("Memory allocation has been failed! \n");
+    }
+    else{
+        printf("Memory allocation has been succeeded. \n");
+    }
+
+    do { 
+        // menu
+        printf("MENU\n");
+        printf("---------------\n");
+        printf("1) Summation: \n");
+        printf("2) Subtraction: \n");
+        printf("3) Multiplication: \n");
+        printf("4) Division: \n");
+        printf("5) Show history. \n");
+        printf("6) Square root: \n");
+        printf("7) Area of the circle: \n");
+        printf("8) Circumference of the circle: \n");
+        printf("9) Convert degree to rad: \n");
+        printf("10) Exponential (x^y) : \n");
+        printf("11) Factoriel : \n");
+        printf("12) Average of the given numbers : \n");
+        printf("13) Standart deviation of the given list of numbers : \n");
+        printf("14) Relative uncertainty : \n");
+        printf("15) Combined uncertainty : \n");
+        printf("16) Exit. \n");
+
+        if(index >= calc_space + extra_calc_space){
+            printf("You achieved maximum limit of calculations.\n");
+            printf("Do you want to calculate more? 1:Yes 0:No ");
+            scanf("%d",&extra_calc_choice);
+
+            if (extra_calc_choice==1){
+                printf("How many more calculations do you want to make?");
+                scanf("%d",&extra_calc_space);
+                calc_hist = (double*) realloc(calc_hist,(calc_space+extra_calc_space)*sizeof(int));
+            }
+            else{
+                printf("Exit the program.\n");
+                return 0;
+            }
+        }
+
+        printf("Please enter your choice 1-16: ");
+        scanf("%d",&choice);
+
+        if (choice>16 || choice<1){
+            printf("Please enter number between 1 and 16.\n");
+        }
+        else {
+            if (choice==1){
+                printf("Please enter the first number: ");
+                scanf("%lf",&x1);
+                printf("Please enter the second number: ");
+                scanf("%lf",&x2);
+                result=summation(x1,x2);
+                calc_hist[index++]=result;
+                printf("%lf + %lf = %lf \n",x1,x2,result);
+            }
+
+            if (choice==2){
+                printf("Please enter the first number: ");
+                scanf("%lf",&x1);
+                printf("Please enter the second number: ");
+                scanf("%lf",&x2);
+                result=subtraction(x1,x2);
+                calc_hist[index++]=result;
+                printf("%lf - %lf = %lf \n",x1,x2,result);
+            }
+
+            if (choice==3){
+                printf("Please enter the first number: ");
+                scanf("%lf",&x1);
+                printf("Please enter the second number: ");
+                scanf("%lf",&x2);
+                result=multiplication(x1,x2);
+                calc_hist[index++]=result;
+                printf("%lf * %lf = %lf \n",x1,x2,result);
+            }
+
+            if (choice==4){
+                printf("Please enter the first number: ");
+                scanf("%lf",&x1);
+                printf("Please enter the second number: ");
+                scanf("%lf",&x2);
+                result=division(x1,x2);
+                calc_hist[index++]=result;
+                printf("%lf / %lf = %lf \n",x1,x2,result);
+            }
+
+            if (choice==5){
+                for(int i=0;i<index;i++){
+                    printf("%d. calculation: %lf \n",i+1,calc_hist[i]);
+                }
+            }
+
+            if (choice==6){
+                printf("Please enter the first number: ");
+                scanf("%lf",&x1);
+                result=square_root(x1);
+                calc_hist[index++]=result;
+                printf("sqrt(%lf) = %lf \n",x1,result);
+            }
+
+            if (choice==7){
+                printf("Please enter the radius of the circle: ");
+                scanf("%lf",&x1);
+                result=area_circ(x1);
+                calc_hist[index++]=result;
+                printf("%lf * %lf * %lf = %lf \n",PI,x1,x1,result);
+            }
+
+            if (choice==8){
+                printf("Please enter the radius of the circle: ");
+                scanf("%lf",&x1);
+                result=circumference_circ(x1);
+                calc_hist[index++]=result;
+                printf("2 * %lf * %lf = %lf \n",PI,x1,result);
+            }
+
+            if (choice==9){
+                printf("Please enter an angle in degrees to convert rad: ");
+                scanf("%d",&angle);
+                result=deg_to_rad(angle);
+                calc_hist[index++]=result;
+                printf("%d degrees = %lf rad \n",angle,result);
+            }
+
+            if (choice==10){
+                printf("Please enter the base: ");
+                scanf("%lf",&x1);
+                printf("Please enter the exponent: ");
+                scanf("%d",&exponent);
+                result=exponential_f(x1,exponent);
+                calc_hist[index++]=result;
+                printf("%lf ^ %d = %lf \n",x1,exponent,result);
+            }
+
+            if (choice==11){
+                printf("Please enter the number to achieve factoriel: ");
+                scanf("%d",&f_number);
+                result=factoriel(f_number);
+                calc_hist[index++]=result;
+                printf("%d ! = %d \n",f_number,(int)result);
+            }
+
+            if (choice==12){
+                printf("Please enter the lenght of the list of numbers: ");
+                scanf("%d",&arr_length);
+                for(int i=0;i<arr_length;i++){
+                    printf("Please enter a number to add the list: ");
+                    scanf("%d",&array[i]);
+                }
+                result=average(arr_length,array);
+                calc_hist[index++]=result;
+                printf("Average of the given numbers is: %lf \n",result);
+            }
+
+            if (choice==13){
+                printf("Please enter the lenght of the list of numbers: ");
+                scanf("%d",&arr_length);
+                for(int i=0;i<arr_length;i++){
+                    printf("Please enter a number to add the list: ");
+                    scanf("%d",&array[i]);
+                }
+                result=std(arr_length,array);
+                calc_hist[index++]=result;
+                printf("Standart deviation of the given numbers is: %lf \n",result);
+            }
+
+            if (choice==14){
+                printf("Please enter the lenght of the list of numbers: ");
+                scanf("%d",&arr_length);
+                for(int i=0;i<arr_length;i++){
+                    printf("Please enter a number to add the list: ");
+                    scanf("%d",&array[i]);
+                }
+                result = relative_uncertainty(arr_length, array);
+                calc_hist[index++]=result;
+                printf("Relative uncertainty = %lf \n",result);
+            }
+
+            if (choice==15){
+                printf("Enter uncertainty u1: ");
+                scanf("%lf",&x1);
+                printf("Enter uncertainty u2: ");
+                scanf("%lf",&x2);
+                result = combined_uncertainty(x1, x2);
+                calc_hist[index++]=result;
+                printf("Combined uncertainty = %lf \n",result);
+            }
+        }
+
+    } while (choice!=16);
+    
+    printf("Exit the program.\n");
+    free(calc_hist);
+    return 0;
+}
