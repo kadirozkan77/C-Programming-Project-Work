@@ -6,7 +6,6 @@
 
 const double PI = 3.14159265359;
 
-/* ---------- INPUT VALIDATION FUNCTION (added) ---------- */
 
 int get_valid_int() {
     char buffer[100];
@@ -27,7 +26,7 @@ int get_valid_int() {
     }
 }
 
-/* ---------- MODIFIED SUMMATION USING VALIDATION ---------- */
+
 
 double summation(double x1, double x2){
     printf("You must enter integers only.\n");
@@ -38,7 +37,6 @@ double summation(double x1, double x2){
     return a + b;
 }
 
-/* -------------------------------------------------------- */
 
 double subtraction(double x1, double x2){
     return x1-x2;
@@ -101,8 +99,6 @@ double std(int length, int arr[]){
     return sqrt(tot)/length;
 }
 
-/* ---------- NEW STATISTICS FUNCTIONS ---------- */
-
 double relative_uncertainty(int length, int arr[]){
     double mean = average(length, arr);
     double sigma = std(length, arr);
@@ -112,8 +108,6 @@ double relative_uncertainty(int length, int arr[]){
 double combined_uncertainty(double u1, double u2){
     return sqrt(u1*u1 + u2*u2);
 }
-
-/* ------------------------------------------------------------ */
 
 int main(){
     int choice,calc_space,index=0,angle,exponent,f_number;
