@@ -88,7 +88,7 @@ double std(int length, int arr[]){
     int mean=average(length,arr);
     int tot=0;
     for(int i=0;i<length;i++) tot+=(arr[i]-mean)*(arr[i]-mean);
-    return sqrt(tot)/length;
+    return sqrt(tot/length);
 }
 
 double sine(double x1){ return sin(x1); }
