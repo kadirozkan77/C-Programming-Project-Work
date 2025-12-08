@@ -57,15 +57,6 @@ double safeDouble() {
     }
 }
 
-int safeBinary() {
-    int x;
-    while (1) {
-        x = safeInt();
-        if (x == 0 || x == 1) return x;
-        printf("Invalid input. Enter again: ");
-    }
-}
-
 double summation(double x1, double x2){ return x1+x2; }
 double subtraction(double x1, double x2){ return x1-x2; }
 double division(double x1, double x2){ return x1/x2; }
@@ -132,6 +123,16 @@ void linear_eq(double a, double b){
     printf("Root: x = %lf\n", r);
 }
 
+double relative_uncertainty(int length, int arr[]){
+    double mean = average(length, arr);
+    double sigma = std(length, arr);
+    return sigma / mean;
+}
+
+double combined_uncertainty(double u1, double u2){
+    return sqrt(u1*u1 + u2*u2);
+}
+
 int main(){
     int choice, calc_space, index=0, angle, exponent, f_number;
     double x1, x2, result;
@@ -139,6 +140,7 @@ int main(){
     int extra_calc_choice;
     char **calc_hist;
     int arr_length; 
+
 
     printf("How many calculations do you want to make? ");
     calc_space = safeInt();
@@ -160,17 +162,24 @@ int main(){
         printf("11) Factoriel\n");
         printf("12) Average of the given numbers\n");
         printf("13) Standart deviation\n");
-        printf("15) Sin(x)\n");
-        printf("16) Cos(x)\n");
-        printf("17) Tan(x)\n");
-        printf("18) Solve quadratic equation ax^2 + bx + c = 0\n");
-        printf("19) Solve linear equation ax + b = 0\n");
-        printf("20) Exit\n");
+        printf("14) Sin(x)\n");
+        printf("15) Cos(x)\n");
+        printf("16) Tan(x)\n");
+        printf("17) Solve quadratic equation ax^2 + bx + c = 0\n");
+        printf("18) Solve linear equation ax + b = 0\n");
+        printf("19) Relative uncertainty : \n");
+        printf("20) Combined uncertainty : \n");
+        printf("21) Exit\n");
 
         if(index == calc_space + extra_calc_space){
             printf("You achieved maximum limit of calculatons.\n");
             printf("Do you want to calculate more? 1:Yes 0:No ");
-            extra_calc_choice = safeBinary();
+            int extra_calc_choice;
+            while (1) {
+                extra_calc_choice = safeInt();
+                if (extra_calc_choice == 0 || extra_calc_choice == 1) break;
+                printf("Invalid input. Enter again: ");
+            }
 
             if (extra_calc_choice==1){
                 printf("How many more calculations do you want to make? ");
@@ -191,25 +200,12 @@ int main(){
             }
         }
 
-        printf("Please enter your choice 1-20: ");
+        printf("Please enter your choice 1-21: ");
         choice = safeInt();
 
-        if (choice < 1 || choice > 20) {
-            printf("Invalid input. Please input integer between (1 - 20)\n");
+        if (choice < 1 || choice > 21) {
+            printf("Invalid input. Please input integer between (1 - 21)\n");
             continue;
-        }
-
-        if (choice == 20){
-            printf("Calculation history:\n");
-            for (int i=0; i<index; i++)
-                printf("%d. %s\n", i+1, calc_hist[i]);
-
-            for (int i=0; i<index; i++)
-                free(calc_hist[i]);
-            free(calc_hist);
-
-            printf("Exit the program.\n");
-            return 0;
         }
 
         char temp[200];
@@ -359,7 +355,7 @@ int main(){
             printf("%s\n", temp);
         }
 
-        if (choice == 15){
+        if (choice == 14){
             printf("Enter angle: ");
             x1 = safeDouble();
             double rad = deg_to_rad(x1);
@@ -370,7 +366,7 @@ int main(){
             printf("%s\n", temp);
         }
 
-        if (choice == 16){
+        if (choice == 15){
             printf("Enter angle: ");
             x1 = safeDouble();
             double rad = deg_to_rad(x1);
@@ -381,7 +377,7 @@ int main(){
             printf("%s\n", temp);
         }
 
-        if (choice == 17){
+        if (choice == 16){
             printf("Enter angle: ");
             x1 = safeDouble();
             double rad = deg_to_rad(x1);
@@ -392,7 +388,7 @@ int main(){
             printf("%s\n", temp);
         }
 
-        if (choice == 18){
+        if (choice == 17){
             double a,b,c;
             printf("Enter a: ");
             a = safeDouble();
@@ -408,7 +404,7 @@ int main(){
             strcpy(calc_hist[index++], temp);
         }
 
-        if (choice == 19){
+        if (choice == 18){
             double a,b;
             printf("Enter a: ");
             a = safeDouble();
@@ -423,6 +419,46 @@ int main(){
                 calc_hist[index] = malloc(strlen(temp)+1);
                 strcpy(calc_hist[index++], temp);
             }
+        }
+
+        if (choice == 19) {
+            printf("Please enter the length of the list of numbers: ");
+            arr_length = safeInt();
+            int array[arr_length];  
+            for (int i = 0; i < arr_length; i++) {
+                printf("Please enter a number to add to the list: ");
+                array[i] = safeInt();  // use safe input
+            }
+            result = relative_uncertainty(arr_length, array);
+            sprintf(temp, "Relative uncertainty = %lf", result);
+            calc_hist[index] = malloc(strlen(temp) + 1);
+            strcpy(calc_hist[index++], temp);
+            printf("%s\n", temp);
+        }
+
+        if (choice==20){
+                printf("Enter uncertainty u1: ");
+                scanf("%lf",&x1);
+                printf("Enter uncertainty u2: ");
+                scanf("%lf",&x2);
+                result = combined_uncertainty(x1, x2);
+                sprintf(temp, "Combined uncertainty = %lf", result);
+                calc_hist[index] = malloc(strlen(temp)+1);
+                strcpy(calc_hist[index++], temp);
+                printf("%s\n", temp);
+        }
+
+        if (choice == 21){
+            printf("Calculation history:\n");
+            for (int i=0; i<index; i++)
+                printf("%d. %s\n", i+1, calc_hist[i]);
+
+            for (int i=0; i<index; i++)
+                free(calc_hist[i]);
+            free(calc_hist);
+
+            printf("Exit the program.\n");
+            return 0;
         }
 
     } while (1);
